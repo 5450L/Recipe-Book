@@ -3,8 +3,8 @@
   <div class="row">
     <div class="col-md-12">
       <h2>I`m working!</h2>
-      <app-recipes *ngIf="selectedFeature === 'recipes'"></app-recipes>
-      <app-shopping-list *ngIf="selectedFeature !== 'recipes'"></app-shopping-list>
+      <app-recipes *ngIf="selectedFeature !== 'shopping-list'"></app-recipes>
+      <app-shopping-list *ngIf="selectedFeature === 'shopping-list'"></app-shopping-list>
     </div>
   </div>
 </div>

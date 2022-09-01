@@ -12,6 +12,5 @@ export class AppComponent {
 
   showFeature(feature){
     this.selectedFeature = feature;
-    console.log(this.selectedFeature);
   }
 }

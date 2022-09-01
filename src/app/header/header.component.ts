@@ -12,6 +12,5 @@ export class HeaderComponent {
 
   selectFeature(feature: string) {
     this.selectedFeatureEvent.emit(feature);
-    console.log(feature);
   }
 }
