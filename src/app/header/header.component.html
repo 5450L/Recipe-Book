@@ -16,17 +16,17 @@
       (window:resize)="collapsed = true"
     >
       <ul class="nav navbar-nav" >
-        <li><a href="#" (click)="selectFeature('recipes')">Recipes</a></li>
-        <li><a href="#" (click)="selectFeature('shopping-list')">Shopping List</a></li>
+        <li><a (click)="selectFeature('recipes')">Recipes</a></li>
+        <li><a (click)="selectFeature('shopping-list')">Shopping List</a></li>
       </ul>
-      <ul class="nav navbar navbar-right" id="nav-elem-dropdown">
-        <li class="dropdown">
-          <a href="" class="dropdown-toggle" id="manage" role="button" 
+      <ul class="nav navbar navbar-right" id="nav-elem-dropdown" >
+        <li class="dropdown" appDropdown>
+          <a class="dropdown-toggle" id="manage" role="button" 
             >Manage <span class="caret"></span
           ></a>
           <ul class="dropdown-menu">
-            <li><a href="#">Save data</a></li>
-            <li><a href="#">Fetch data</a></li>
+            <li><a >Save data</a></li>
+            <li><a >Fetch data</a></li>
           </ul>
         </li>
       </ul>

@@ -1,12 +1,11 @@
 import {
   Component,
   ElementRef,
-  EventEmitter,
   OnInit,
-  Output,
   ViewChild,
 } from '@angular/core';
 import { Ingredient } from 'src/app/shared/ingredient.model';
+import { ShoppingListService } from '../shopping-list.service';
 
 @Component({
   selector: 'app-shopping-edit',
@@ -14,20 +13,16 @@ import { Ingredient } from 'src/app/shared/ingredient.model';
   styleUrls: ['./shopping-edit.component.css'],
 })
 export class ShoppingEditComponent implements OnInit {
-  @Output() newIngredientEvent = new EventEmitter<Ingredient>();
-
   @ViewChild('amountInput', { static: true }) amountInput: ElementRef;
-  // newIngredient: Ingredient = { name:'', amount:0};
-  constructor() {}
+  
+  constructor( private shoppingListService : ShoppingListService) {}
 
-  ngOnInit(): void {}
+  ngOnInit() {}
 
-  addIngredient(nameInput: HTMLInputElement) {
-    // this.newIngredient.name = nameInput.value;
-    // this.newIngredient.amount = this.amountInput.nativeElement.value;
+ addIngredient(nameInput: HTMLInputElement) {
     let ingName = nameInput.value;
-    let ingAmount = this.amountInput.nativeElement.value;
+    let ingAmount:number = this.amountInput.nativeElement.value;
     let newIngredient:Ingredient = new Ingredient(ingName, ingAmount);
-    this.newIngredientEvent.emit(newIngredient);
+    this.shoppingListService.addIngredient(newIngredient);
   }
 }

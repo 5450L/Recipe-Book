@@ -1,11 +1,12 @@
 <div class="row">
   <div class="col-md-5">
-    <app-recipe-list
-      (recipeItemForTransfer)="transferedRecipeItem = $event"
-    ></app-recipe-list>
+    <app-recipe-list></app-recipe-list>
   </div>
   <div class="col-md-7">
-    <app-recipe-detail *ngIf="transferedRecipeItem; else selectRecipePls" [recipe] = "transferedRecipeItem"></app-recipe-detail>
+    <app-recipe-detail
+      *ngIf="transferedRecipeItem; else selectRecipePls"
+      [recipe]="transferedRecipeItem"
+    ></app-recipe-detail>
     <ng-template #selectRecipePls>
       <p>Please, select recipe !</p>
     </ng-template>
