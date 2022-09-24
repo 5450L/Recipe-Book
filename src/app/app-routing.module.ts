@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { Route, RouterModule, Routes } from '@angular/router';
 import { RecipeDetailComponent } from './recipes/recipe-detail/recipe-detail.component';
+import { RecipeEditComponent } from './recipes/recipe-detail/recipe-edit/recipe-edit.component';
 import { RecipeItemComponent } from './recipes/recipe-item/recipe-item.component';
 import { RecipeStartComponent } from './recipes/recipe-start/recipe-start.component';
 import { RecipesComponent } from './recipes/recipes.component';
@@ -13,7 +14,10 @@ const appRoutes: Routes = [
     component: RecipesComponent,
     children: [
       { path: '', component: RecipeStartComponent },
+      { path: 'new', component: RecipeEditComponent },
       { path: ':id', component: RecipeDetailComponent },
+      { path: ':id/edit', component: RecipeEditComponent },
+      
     ],
   },
   { path: 'shopping-list', component: ShoppingListComponent },
