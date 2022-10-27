@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 <div class="row">
   <div class="col-xs-12">
     <form action="" [formGroup]="recipeForm" (ngSubmit)="onSubmit()">
@@ -8,10 +7,28 @@
             type="submit"
             class="btn btn-success"
             style="margin-right: 0.5rem"
+            [disabled]="!recipeForm.valid"
           >
             Save
           </button>
-          <button class="btn btn-danger" type="button">Cancel</button>
+
+          <button
+            class="btn btn-danger"
+            type="button"
+            type="button"
+            style="margin-right: 0.5rem"
+            (click)="onCancel()"
+          >
+            Cancel
+          </button>
+          <button
+            class="btn btn-info"
+            type="button"
+            (click)="onDelete()"
+            *ngIf="id != null"
+          >
+            Delete
+          </button>
         </div>
       </div>
 
@@ -38,6 +55,7 @@
               id="imagePath"
               class="form-control"
               formControlName="imagePath"
+              #imagePath
             />
           </div>
         </div>
@@ -46,7 +64,11 @@
       <div class="row">
         <div class="col-xs-12">
           <div class="form-group">
-            <img src="" class="image-responsive" />
+            <img
+              [src]="imagePath.value"
+              class="image-responsive"
+              style="width: 100%;"
+            />
           </div>
         </div>
       </div>
@@ -67,16 +89,37 @@
       </div>
 
       <div class="row">
-        <div class="col-xs-12">
-          <div class="row">
+        <div class="col-xs-12" formArrayName="ingredients">
+          <div
+            class="row"
+            *ngFor="let ingredientCtrl of ingredientsControls; let i = index"
+            [formGroupName]="i"
+            style="margin-top: 0.75rem"
+          >
             <div class="col-xs-8">
-              <input type="text" class="form-control" />
+              <input type="text" class="form-control" formControlName="name" />
             </div>
             <div class="col-xs-2">
-              <input type="number" class="form-control" />
+              <input
+                type="number"
+                class="form-control"
+                formControlName="amount"
+              />
             </div>
             <div class="col-xs-2">
-              <button class="btn btn-danger">X</button>
+              <button class="btn btn-danger" type="button" (click)="onDeleteIngredient(i)">X</button>
+            </div>
+          </div>
+          <hr />
+          <div class="row">
+            <div class="col-xs-12">
+              <button
+                class="btn btn-success"
+                type="button"
+                (click)="onAddIngredient()"
+              >
+                Add Ingredient
+              </button>
             </div>
           </div>
         </div>
@@ -84,6 +127,3 @@
     </form>
   </div>
 </div>
-=======
-<p>recipe-edit works!</p>
->>>>>>> refs/remotes/origin/master
