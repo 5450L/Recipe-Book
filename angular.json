@@ -98,8 +98,11 @@
         }
       }
     }
+<<<<<<< HEAD
   },
   "cli": {
     "analytics": false
+=======
+>>>>>>> refs/remotes/origin/master
   }
 }
