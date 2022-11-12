@@ -1,7 +1,8 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { Subject, throwError } from 'rxjs';
+import { catchError, tap } from 'rxjs/operators';
+import { User } from './user.model';
 
 export interface AuthResponseData {
   kind: string;
@@ -17,6 +18,8 @@ export interface AuthResponseData {
   providedIn: 'root',
 })
 export class AuthService {
+  user = new Subject<User>();
+
   constructor(private http: HttpClient) {}
 
   signup(email: string, password: string) {
@@ -30,18 +33,14 @@ export class AuthService {
         }
       )
       .pipe(
-        catchError((error) => {
-          let errorMessage = 'An unknown erroroccured!';
-          if (!error.error.error || !error.error) {
-            return throwError(errorMessage);
-          }
-
-          switch (error.error.error.message) {
-            case 'EMAIL_EXISTS':
-              errorMessage = 'User with such email already exists';
-          }
-
-          return throwError(errorMessage);
+        catchError(this.handleError),
+        tap((responseData) => {
+          this.handleAuthentication(
+            responseData.email,
+            responseData.localId,
+            responseData.idToken,
+            +responseData.expiresIn
+          );
         })
       );
   }
@@ -57,19 +56,48 @@ export class AuthService {
         }
       )
       .pipe(
-        catchError((error) => {
-          let errorMessage = 'An unknown erroroccured!';
-          if (!error.error.error || !error.error) {
-            return throwError(errorMessage);
-          }
-
-          switch (error.error.error.message) {
-            case 'EMAIL_EXISTS':
-              errorMessage = 'User with such email already exists';
-          }
-
-          return throwError(errorMessage);
+        catchError(this.handleError),
+        tap((responseData) => {
+          this.handleAuthentication(
+            responseData.email,
+            responseData.localId,
+            responseData.idToken,
+            +responseData.expiresIn
+          );
         })
       );
+  }
+
+  private handleError(errorResponse: HttpErrorResponse) {
+    let errorMessage = 'An unknown erroroccured!';
+    if (!errorResponse.error.error || !errorResponse.error) {
+      return throwError(errorMessage);
+    }
+
+    switch (errorResponse.error.error.message) {
+      case 'EMAIL_EXISTS':
+        errorMessage = 'User with such email already exists';
+        break;
+
+      case 'EMAIL_NOT_FOUND':
+        errorMessage = 'This email does not exist';
+        break;
+      case 'INVALID_PASSWORD':
+        errorMessage = 'Invalid password';
+        break;
+    }
+
+    return throwError(errorMessage);
+  }
+
+  private handleAuthentication(
+    email: string,
+    userId: string,
+    token: string,
+    expiresIn: number
+  ) {
+    const expirationDate = new Date(new Date().getTime() + +expiresIn * 1000);
+    const user = new User(email, userId, token, expirationDate);
+    this.user.next(user);
   }
 }
