@@ -32,7 +32,7 @@
         *ngIf="isAuthenticated"
       >
         <li>
-          <a style="cursor: pointer">Logout</a>
+          <a style="cursor: pointer" (click)="onLogout()">Logout</a>
         </li>
         <li class="dropdown" appDropdown>
           <a
