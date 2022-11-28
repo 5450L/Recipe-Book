@@ -1,15 +1,20 @@
-import { EventEmitter } from '@angular/core';
+import { Injectable } from '@angular/core';
+import { Store } from '@ngrx/store';
 import { Subject } from 'rxjs';
 import { Ingredient } from '../shared/ingredient.model';
+import * as ShoppingListActions from './store/shopping-list.actions';
+import * as _ from 'lodash';
 
+@Injectable()
 export class ShoppingListService {
   ingredientsChanged = new Subject<Ingredient[]>();
   startedEditing = new Subject<number>();
 
-  private ingredients: Ingredient[] = [
-    new Ingredient('Meat', 5),
-    new Ingredient('Tomato', 10),
-  ];
+  constructor(
+    private store: Store<{ shoppingList: { ingredients: Ingredient[] } }>
+  ) {}
+
+  private ingredients: Ingredient[];
 
   getIngredients() {
     return this.ingredients.slice();
@@ -21,18 +26,27 @@ export class ShoppingListService {
   addIngredient(newIngredient: Ingredient) {
     let isSameName: boolean = false;
 
+    this.store.select('shoppingList').subscribe((ingredients) => {
+      console.log(ingredients.ingredients);
+      this.ingredients = ingredients.ingredients;
+    });
+
+    let ingredients = _.cloneDeep(this.ingredients);
+    
     for (let i = 0; i < this.ingredients.length; i++) {
-      if (this.ingredients[i].name === newIngredient.name) {
-        this.ingredients[i].amount =
-          +this.ingredients[i].amount + +newIngredient.amount;
+      if (ingredients[i].name === newIngredient.name) {
+        ingredients[i].amount = +ingredients[i].amount + +newIngredient.amount;
         isSameName = true;
+
+        this.store.dispatch(
+          new ShoppingListActions.AddIngredients(ingredients)
+        );
       }
     }
     if (isSameName === false) {
-      this.ingredients.push(newIngredient);
+      ingredients.push(newIngredient);
+      this.store.dispatch(new ShoppingListActions.AddIngredients(ingredients));
     }
-
-    this.ingredientsChanged.next(this.ingredients.slice());
   }
 
   deleteIngredient(index: number) {
