@@ -14,7 +14,7 @@ import * as ShoppingListActions from '../store/shopping-list.actions';
 export class ShoppingEditComponent implements OnInit, OnDestroy {
   @ViewChild('f', { static: false }) shoppingListForm: NgForm;
 
-  shoppingEditSubscription: Subscription;
+  shoppingEditSubscriptions: Subscription[] = [];
   editMode = false;
   editedItemIndex: number;
   editedItem: Ingredient;
@@ -25,16 +25,21 @@ export class ShoppingEditComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.shoppingEditSubscription =
+    this.shoppingEditSubscriptions.push(
       this.shoppingListService.startedEditing.subscribe((index: number) => {
         this.editedItemIndex = index;
         this.editMode = true;
-        this.editedItem = this.shoppingListService.getIngredient(index);
+        this.shoppingEditSubscriptions.push(
+          this.store.select('shoppingList').subscribe((ingredients) => {
+            this.editedItem = ingredients.ingredients[this.editedItemIndex];
+          })
+        );
         this.shoppingListForm.setValue({
           name: this.editedItem.name,
           amount: this.editedItem.amount,
         });
-      });
+      })
+    );
   }
 
   addIngredient(form: NgForm) {
@@ -52,11 +57,21 @@ export class ShoppingEditComponent implements OnInit, OnDestroy {
     this.editMode = false;
   }
 
+  onUpdate(form: NgForm) {
+    let ingName = form.value.name;
+    let ingAmount: number = +form.value.amount;
+    let newIngredient: Ingredient = new Ingredient(ingName, +ingAmount);
+    this.shoppingListService.updateIngredient(
+      this.editedItemIndex,
+      newIngredient
+    );
+  }
+
   onDelete() {
     this.shoppingListService.deleteIngredient(this.editedItemIndex);
     this.onClear();
   }
   ngOnDestroy(): void {
-    this.shoppingEditSubscription.unsubscribe;
+    this.shoppingEditSubscriptions.forEach((sub) => sub.unsubscribe());
   }
 }

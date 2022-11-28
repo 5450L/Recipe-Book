@@ -32,7 +32,7 @@ export class ShoppingListService {
     });
 
     let ingredients = _.cloneDeep(this.ingredients);
-    
+
     for (let i = 0; i < this.ingredients.length; i++) {
       if (ingredients[i].name === newIngredient.name) {
         ingredients[i].amount = +ingredients[i].amount + +newIngredient.amount;
@@ -49,8 +49,16 @@ export class ShoppingListService {
     }
   }
 
+  updateIngredient(index: number, ingredient: Ingredient) {
+    this.store.dispatch(
+      new ShoppingListActions.UpdateIngredient({ index, ingredient })
+    );
+  }
+
   deleteIngredient(index: number) {
-    this.ingredients.splice(index, 1);
-    this.ingredientsChanged.next(this.ingredients.slice());
+    this.store.dispatch(new ShoppingListActions.DeleteIngredient(index));
+
+    // this.ingredients.splice(index, 1);
+    // this.ingredientsChanged.next(this.ingredients.slice());
   }
 }

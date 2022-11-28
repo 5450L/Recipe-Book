@@ -32,9 +32,34 @@
       </div>
       <div class="row">
         <div class="col-xs-12">
-          <button class="btn btn-success" type="submit" [disabled]="!f.valid">Add</button>
-          <button class="btn btn-primary" type="button" (click)="onClear()">Clear</button>
-          <button class="btn btn-danger" type="button" (click)="onDelete()" *ngIf="editMode">Delete</button>
+          <button
+            class="btn btn-success"
+            type="submit"
+            [disabled]="!f.valid"
+            *ngIf="!editMode"
+          >
+            Add
+          </button>
+          <button
+            class="btn btn-success"
+            type="button"
+            (click)="onUpdate(f)"
+            [disabled]="!f.valid"
+            *ngIf="editMode"
+          >
+            Update
+          </button>
+          <button class="btn btn-primary" type="button" (click)="onClear()">
+            Clear
+          </button>
+          <button
+            class="btn btn-danger"
+            type="button"
+            (click)="onDelete()"
+            *ngIf="editMode"
+          >
+            Delete
+          </button>
         </div>
       </div>
     </form>
