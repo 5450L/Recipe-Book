@@ -3,6 +3,8 @@ import { Store } from '@ngrx/store';
 import { Subject } from 'rxjs';
 import { Ingredient } from '../shared/ingredient.model';
 import * as ShoppingListActions from './store/shopping-list.actions';
+import * as fromShoppingList from '../shopping-list/store/shopping-list.reduser';
+
 import * as _ from 'lodash';
 
 @Injectable()
@@ -11,7 +13,7 @@ export class ShoppingListService {
   startedEditing = new Subject<number>();
 
   constructor(
-    private store: Store<{ shoppingList: { ingredients: Ingredient[] } }>
+    private store: Store<fromShoppingList.AppState>
   ) {}
 
   private ingredients: Ingredient[];
@@ -27,7 +29,6 @@ export class ShoppingListService {
     let isSameName: boolean = false;
 
     this.store.select('shoppingList').subscribe((ingredients) => {
-      console.log(ingredients.ingredients);
       this.ingredients = ingredients.ingredients;
     });
 
@@ -49,14 +50,14 @@ export class ShoppingListService {
     }
   }
 
-  updateIngredient(index: number, ingredient: Ingredient) {
+  updateIngredient(ingredient: Ingredient) {
     this.store.dispatch(
-      new ShoppingListActions.UpdateIngredient({ index, ingredient })
+      new ShoppingListActions.UpdateIngredient(ingredient )
     );
   }
 
-  deleteIngredient(index: number) {
-    this.store.dispatch(new ShoppingListActions.DeleteIngredient(index));
+  deleteIngredient() {
+    this.store.dispatch(new ShoppingListActions.DeleteIngredient());
 
     // this.ingredients.splice(index, 1);
     // this.ingredientsChanged.next(this.ingredients.slice());
